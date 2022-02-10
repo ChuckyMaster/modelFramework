@@ -66,14 +66,14 @@ public function findById(int $id){
  * 
  */
 
-public function remove(int $id): void {
+public function remove(object $objet): void {
 
        
 
     $requestRemove = $this->pdo->prepare("DELETE FROM {$this->tableName} WHERE id = :id");
 
     $requestRemove->execute([
-            "id" => $id
+            "id" => $objet->getId()
     ]);
 }
 

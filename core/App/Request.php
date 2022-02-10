@@ -41,6 +41,8 @@ class Request
         if($_SERVER['REQUEST_METHOD'] != 'DELETE') {
             return false;
         }
+
+        return Request::isSubmitted($dataType, $requestBodyParams);
     }
 
     public static function put(string $dataType, array $requestBodyParams){
@@ -65,7 +67,7 @@ class Request
     public static function isSubmitted(string $dataType, array $requestBodyParams)
     {
         if($dataType == "json"){
-            $bodyRequest = file_get_contents( 'php//input');
+            $bodyRequest = file_get_contents( 'php://input');
             $requestParams = json_decode($bodyRequest, true);
         }
 

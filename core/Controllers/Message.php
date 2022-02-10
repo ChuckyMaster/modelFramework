@@ -17,27 +17,18 @@ class Message extends AbstractController
     public function new(){
 
 
-        $request = file_get_contents('php://input');
+
+        $request = $this->post("json", [
+            "author" => "text",
+            "contentArea" => "text"
+        ]);
 
 
-        $requestDeserialize= json_decode($request, true);
-
-        $author = null;
-        $content = null;
-
-        if(!empty($requestDeserialize['author'])){
-            $author = htmlspecialchars($requestDeserialize['author']);
-        }
-
-        if (!empty($requestDeserialize['contentArea'])){
-            $content = htmlspecialchars($requestDeserialize['contentArea']);
-        }
-
-        if($author && $content){
+        if($request){
 
             $message = new \Models\Message();
-            $message->setAuthor($author);
-            $message->setContent($content);
+            $message->setAuthor($request["author"]);
+            $message->setContent($request["contentArea"]);
             $this->defaultModel->save($message);
 
             return $this->json('message send');
@@ -53,7 +44,8 @@ class Message extends AbstractController
         //recuperer la requete
 
         $request = $this->delete('json', ['id' => 'number']);
-        if($request){
+
+        if(!$request){
             return $this->json("Requête mal soumise", "delete");
         }
 
@@ -61,6 +53,11 @@ class Message extends AbstractController
         //s'il n'existe pas renvoyer une réponse qui le signale
 
         $message = $this->defaultModel->findById($request['id']);
+
+        if(!$message){
+             return $this->json("Le message n'existe pas", "delete");
+
+        }
 
 
         //supprimer le message
